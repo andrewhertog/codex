@@ -108,6 +108,10 @@ jobs:
         run: ./get_repo.sh
         if: env.SHOULD_BUILD == 'yes'
 
+      - name: Add extensions
+        if: env.SHOULD_BUILD == 'yes'
+        run: ./get-extensions.sh
+
       - name: Build
         env:
           SHOULD_BUILD_REH: 'no'

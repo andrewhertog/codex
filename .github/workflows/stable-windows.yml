@@ -71,6 +71,10 @@ jobs:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_repo.sh
 
+      - name: Add extensions
+        if: env.SHOULD_BUILD == 'yes'
+        run: ./get-extensions.sh
+
       - name: Check PR or cron
         env:
           GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
