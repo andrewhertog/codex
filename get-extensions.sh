@@ -3,7 +3,7 @@
 #jsonfile=$(wget -O - https://raw.githubusercontent.com/vipinpaul/oak-extensions/main/extensions.json)
 jsonfile=$(cat extensions.json)
 
-#cd vscode/
+cd vscode/
 
 count=$(jq -r '. | length' extensions.json)
 for i in $(seq $count); do
