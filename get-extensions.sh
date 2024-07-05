@@ -11,7 +11,7 @@ for i in $(seq $count); do
   name=$(jq -r ".[$i-1].name" extensions.json)
   echo $name $url
   mkdir -p ./extensions/"$name"
-  wget "$url" -O "$name".zip
+  curl -o "$name".zip "$url"
   unzip "$name".zip -d ./extensions/"$name"
   mv ./extensions/"$name"/extension/* ./extensions/"$name"/
   rm "$name".zip
