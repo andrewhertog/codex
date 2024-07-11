@@ -1,0 +1,17 @@
+diff --git a/build/gulpfile.js b/build/gulpfile.js
+index e945c06eed4..0c7f8a39184 100644
+--- a/build/gulpfile.js
++++ b/build/gulpfile.js
+@@ -5,6 +5,12 @@
+ 
+ 'use strict';
+ 
++// patch the use of fs to use graceful-fs
++const realFs = require('fs');
++const gracefulFs = require('graceful-fs');
++gracefulFs.gracefulify(realFs);
++
++
+ // Increase max listeners for event emitters
+ require('events').EventEmitter.defaultMaxListeners = 100;
+ 
