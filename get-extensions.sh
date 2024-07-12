@@ -14,7 +14,13 @@ for i in $(seq $count); do
   unzip "$name".zip -d ${extensions_dir}/"$name"
   mv ${extensions_dir}/"$name"/extension/* ${extensions_dir}/"$name"/
   cd ${extensions_dir}/"$name"
-  npm install --omit=dev
+  if [ -d "node_modules" ]; then
+    rm -rf node_modules
+    npm install --omit=dev
+  fi
+  if [ -d "out" ]; then
+    rm -rf out
+  fi
   cd ${base_dir}
   rm "$name".zip
 done
