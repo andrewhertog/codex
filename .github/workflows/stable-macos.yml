@@ -74,9 +74,9 @@ jobs:
         run: . check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
-      - name: Add extensions
-        if: env.SHOULD_BUILD == 'yes'
-        run: ./get-extensions.sh
+      # - name: Add extensions
+      #   if: env.SHOULD_BUILD == 'yes'
+      #   run: ./get-extensions.sh
 
       - name: Build
         env:
