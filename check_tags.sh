@@ -163,18 +163,14 @@ elif [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_ZIP="no"
       fi
 
-      if [[ "${DISABLE_MSI}" == "yes" ]]; then
-          export SHOULD_BUILD_MSI="no"
-      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows ia32 because we have no msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI="no"
       fi
 
-      if [[ "${DISABLE_MSI}" == "yes" ]]; then
-          export SHOULD_BUILD_MSI_NOUP="no"
-      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows ia32 because we have no updates-disabled msi"
         export SHOULD_BUILD="yes"
       else
@@ -222,18 +218,14 @@ elif [[ "${ASSETS}" != "null" ]]; then
         export SHOULD_BUILD_ZIP="no"
       fi
 
-      if [[ "${DISABLE_MSI}" == "yes" ]]; then
-          export SHOULD_BUILD_MSI="no"
-      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows x64 because we have no msi"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_MSI="no"
       fi
 
-      if [[ "${DISABLE_MSI}" == "yes" ]]; then
-          export SHOULD_BUILD_MSI_NOUP="no"
-      elif [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
+      if [[ -z $( contains "${APP_NAME}-${VSCODE_ARCH}-updates-disabled-${RELEASE_VERSION}.msi" ) ]]; then
         echo "Building on Windows x64 because we have no updates-disabled msi"
         export SHOULD_BUILD="yes"
       else
@@ -261,7 +253,6 @@ elif [[ "${ASSETS}" != "null" ]]; then
   elif [[ "${OS_NAME}" == "linux" ]]; then
 
     if [[ "${CHECK_ONLY_REH}" == "yes" ]]; then
-
       if [[ -z $( contains "${APP_NAME_LC}-reh-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" ) ]]; then
         echo "Building on Linux ${VSCODE_ARCH} because we have no REH archive"
         export SHOULD_BUILD="yes"
@@ -545,17 +536,13 @@ else
       SHOULD_BUILD_DEB="no"
       SHOULD_BUILD_RPM="no"
     fi
-    if [[ "${VSCODE_ARCH}" != "x64" || "${DISABLE_APPIMAGE}" == "yes" ]]; then
+    if [[ "${VSCODE_ARCH}" != "x64" ]]; then
       export SHOULD_BUILD_APPIMAGE="no"
     fi
   elif [[ "${OS_NAME}" == "windows" ]]; then
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
       export SHOULD_BUILD_REH="no"
       export SHOULD_BUILD_REH_WEB="no"
-    fi
-    if [[ "${DISABLE_MSI}" == "yes" ]]; then
-      export SHOULD_BUILD_MSI="no"
-      export SHOULD_BUILD_MSI_NOUP="no"
     fi
   fi
 

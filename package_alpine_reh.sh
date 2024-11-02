@@ -32,12 +32,12 @@ if [[ -d "../patches/alpine/reh/" ]]; then
 fi
 
 for i in {1..5}; do # try 5 times
-  npm ci && break
+  yarn --frozen-lockfile --check-files && break
   if [[ $i == 3 ]]; then
-    echo "Npm install failed too many times" >&2
+    echo "Yarn failed too many times" >&2
     exit 1
   fi
-  echo "Npm install failed $i, trying again..."
+  echo "Yarn failed $i, trying again..."
 done
 
 node build/azure-pipelines/distro/mixin-npm

@@ -23,8 +23,7 @@ if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
   GLIBC_VERSION="2.28"
 elif [[ "${VSCODE_ARCH}" == "riscv64" ]]; then
   # Unofficial RISC-V nodejs builds doesn't provide v16.x
-  # Node 18 is buggy so use 20 here for now: https://github.com/VSCodium/vscodium/issues/2060
-  NODE_VERSION="20.16.0"
+  NODE_VERSION="18.18.1"
 fi
 
 export VSCODE_PLATFORM='linux'
@@ -53,7 +52,7 @@ fi
 
 export VSCODE_REMOTE_DEPENDENCIES_CONTAINER_NAME
 
-sed -i "/target/s/\"20.*\"/\"${NODE_VERSION}\"/" remote/.npmrc
+sed -i "/target/s/\"20.*\"/\"${NODE_VERSION}\"/" remote/.yarnrc
 
 if [[ "${NODE_VERSION}" != 16* ]]; then
   if [[ -f "../patches/linux/reh/node16.patch" ]]; then
@@ -73,35 +72,13 @@ if [[ -d "../patches/linux/reh/" ]]; then
   done
 fi
 
-if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
-  INCLUDES=$(cat <<EOF
-{
-  "target_defaults": {
-    "conditions": [
-      ["OS=='linux'", {
-        'cflags_cc!': [ '-std=gnu++20' ],
-        'cflags_cc': [ '-std=gnu++2a' ],
-      }]
-    ]
-  }
-}
-EOF
-)
-
-  if [ ! -d "$HOME/.gyp" ]; then
-    mkdir -p "$HOME/.gyp"
-  fi
-
-  echo "${INCLUDES}" > "$HOME/.gyp/include.gypi"
-fi
-
 for i in {1..5}; do # try 5 times
-  npm ci --prefix build && break
+  yarn --cwd build --frozen-lockfile --check-files && break
   if [[ $i == 3 ]]; then
-    echo "Npm install failed too many times" >&2
+    echo "Yarn failed too many times" >&2
     exit 1
   fi
-  echo "Npm install failed $i, trying again..."
+  echo "Yarn failed $i, trying again..."
 done
 
 if [[ "${VSCODE_ARCH}" == "ppc64le" ]]; then
@@ -111,12 +88,12 @@ else
 fi
 
 for i in {1..5}; do # try 5 times
-  npm ci && break
-  if [[ $i == 3 ]]; then
-    echo "Npm install failed too many times" >&2
+  yarn --frozen-lockfile --check-files && break
+  if [ $i -eq 3 ]; then
+    echo "Yarn failed too many times" >&2
     exit 1
   fi
-  echo "Npm install failed $i, trying again..."
+  echo "Yarn failed $i, trying again..."
 done
 
 node build/azure-pipelines/distro/mixin-npm
