@@ -381,9 +381,10 @@ index 4027c81..6885e91 100644
  	"configuration.suggest.completeJSDocs": "Enable/disable suggestion to complete JSDoc comments.",
 -	"configuration.tsserver.useVsCodeWatcher": "Use VS Code's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
 +	"configuration.tsserver.useVsCodeWatcher": "Use Codex's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
+ 	"configuration.tsserver.useVsCodeWatcher.deprecation": "Please use the `#typescript.tsserver.watchOptions#` setting instead.",
  	"configuration.tsserver.watchOptions": "Configure which watching strategies should be used to keep track of files and directories.",
 -	"configuration.tsserver.watchOptions.vscode": "Use VS Code's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
-+	"configuration.tsserver.watchOptions.vscode": "Use VSCodium's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
++	"configuration.tsserver.watchOptions.vscode": "Use Codex's file watchers instead of TypeScript's. Requires using TypeScript 5.4+ in the workspace.",
  	"configuration.tsserver.watchOptions.watchFile": "Strategy for how individual files are watched.",
 @@ -236,6 +236,6 @@
  	"configuration.suggest.objectLiteralMethodSnippets.enabled": "Enable/disable snippet completions for methods in object literals.",
@@ -393,8 +394,8 @@ index 4027c81..6885e91 100644
  	"configuration.tsserver.web.typeAcquisition.enabled": "Enable/disable package acquisition on the web. This enables IntelliSense for imported packages. Requires `#typescript.tsserver.web.projectWideIntellisense.enabled#`. Currently not supported for Safari.",
 -	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want VS Code to detect a Node installation.",
 +	"configuration.tsserver.nodePath": "Run TS Server on a custom Node installation. This can be a path to a Node executable, or 'node' if you want Codex to detect a Node installation.",
- 	"configuration.updateImportsOnPaste": "Automatically update imports when pasting code. Requires TypeScript 5.6+.",
-@@ -248,6 +248,6 @@
+ 	"configuration.updateImportsOnPaste": "Automatically update imports when pasting code. Requires TypeScript 5.7+.",
+@@ -251,6 +251,6 @@
  	"walkthroughs.nodejsWelcome.debugJsFile.title": "Run and Debug your JavaScript",
 -	"walkthroughs.nodejsWelcome.debugJsFile.description": "Once you've installed Node.js, you can run JavaScript programs at a terminal by entering ``node your-file-name.js``\nAnother easy way to run Node.js programs is by using VS Code's debugger which lets you run your code, pause at different points, and help you understand what's going on step-by-step.\n[Start Debugging](command:javascript-walkthrough.commands.debugJsFile)",
 +	"walkthroughs.nodejsWelcome.debugJsFile.description": "Once you've installed Node.js, you can run JavaScript programs at a terminal by entering ``node your-file-name.js``\nAnother easy way to run Node.js programs is by using Codex's debugger which lets you run your code, pause at different points, and help you understand what's going on step-by-step.\n[Start Debugging](command:javascript-walkthrough.commands.debugJsFile)",
@@ -582,11 +583,14 @@ diff --git a/src/vs/platform/extensions/common/extensionValidator.ts b/src/vs/pl
 index 87923dc..c3456ef 100644
 --- a/src/vs/platform/extensions/common/extensionValidator.ts
 +++ b/src/vs/platform/extensions/common/extensionValidator.ts
-@@ -371,3 +371,3 @@ export function areApiProposalsCompatible(apiProposals: string[], arg1?: any): b
- 		if (existingProposal.version !== version) {
--			incompatibleNotices.push(nls.localize('apiProposalMismatch', "Extension is using an API proposal '{0}' that is not compatible with the current version of VS Code.", proposalName));
-+			incompatibleNotices.push(nls.localize('apiProposalMismatch', "Extension is using an API proposal '{0}' that is not compatible with the current version of Codex.", proposalName));
- 		}
+@@ -377,5 +377,5 @@ export function areApiProposalsCompatible(apiProposals: string[], arg1?: any): b
+ 			if (incompatibleProposals.length === 1) {
+-				notices.push(nls.localize('apiProposalMismatch1', "This extension is using the API proposal '{0}' that is not compatible with the current version of VS Code.", incompatibleProposals[0]));
++				notices.push(nls.localize('apiProposalMismatch1', "This extension is using the API proposal '{0}' that is not compatible with the current version of Codex.", incompatibleProposals[0]));
+ 			} else {
+-				notices.push(nls.localize('apiProposalMismatch2', "This extension is using the API proposals {0} and '{1}' that are not compatible with the current version of VS Code.",
++				notices.push(nls.localize('apiProposalMismatch2', "This extension is using the API proposals {0} and '{1}' that are not compatible with the current version of Codex.",
+ 					incompatibleProposals.slice(0, incompatibleProposals.length - 1).map(p => `'${p}'`).join(', '),
 diff --git a/src/vs/platform/externalTerminal/node/externalTerminalService.ts b/src/vs/platform/externalTerminal/node/externalTerminalService.ts
 index 47c1271..b159ac3 100644
 --- a/src/vs/platform/externalTerminal/node/externalTerminalService.ts
@@ -960,12 +964,7 @@ index 33ca655..353692a 100644
 -			markdownDescription: localize('terminal.integrated.experimentalWindowsUseConptyDll', "Whether to use the experimental conpty.dll shipped with VS Code, instead of the one bundled with Windows."),
 +			markdownDescription: localize('terminal.integrated.experimentalWindowsUseConptyDll', "Whether to use the experimental conpty.dll shipped with Codex, instead of the one bundled with Windows."),
  			type: 'boolean',
-@@ -568,3 +568,3 @@ const terminalConfiguration: IConfigurationNode = {
- 		[TerminalSettingId.AutoReplies]: {
--			markdownDescription: localize('terminal.integrated.autoReplies', "A set of messages that, when encountered in the terminal, will be automatically responded to. Provided the message is specific enough, this can help automate away common responses.\n\nRemarks:\n\n- Use {0} to automatically respond to the terminate batch job prompt on Windows.\n- The message includes escape sequences so the reply might not happen with styled text.\n- Each reply can only happen once every second.\n- Use {1} in the reply to mean the enter key.\n- To unset a default key, set the value to null.\n- Restart VS Code if new don't apply.", '`"Terminate batch job (Y/N)": "Y\\r"`', '`"\\r"`'),
-+			markdownDescription: localize('terminal.integrated.autoReplies', "A set of messages that, when encountered in the terminal, will be automatically responded to. Provided the message is specific enough, this can help automate away common responses.\n\nRemarks:\n\n- Use {0} to automatically respond to the terminate batch job prompt on Windows.\n- The message includes escape sequences so the reply might not happen with styled text.\n- Each reply can only happen once every second.\n- Use {1} in the reply to mean the enter key.\n- To unset a default key, set the value to null.\n- Restart Codex if new don't apply.", '`"Terminate batch job (Y/N)": "Y\\r"`', '`"\\r"`'),
- 			type: 'object',
-@@ -581,3 +581,3 @@ const terminalConfiguration: IConfigurationNode = {
+@@ -560,3 +560,3 @@ const terminalConfiguration: IConfigurationNode = {
  			restricted: true,
 -			markdownDescription: localize('terminal.integrated.shellIntegration.enabled', "Determines whether or not shell integration is auto-injected to support features like enhanced command tracking and current working directory detection. \n\nShell integration works by injecting the shell with a startup script. The script gives VS Code insight into what is happening within the terminal.\n\nSupported shells:\n\n- Linux/macOS: bash, fish, pwsh, zsh\n - Windows: pwsh, git bash\n\nThis setting applies only when terminals are created, so you will need to restart your terminals for it to take effect.\n\n Note that the script injection may not work if you have custom arguments defined in the terminal profile, have enabled {1}, have a [complex bash `PROMPT_COMMAND`](https://code.visualstudio.com/docs/editor/integrated-terminal#_complex-bash-promptcommand), or other unsupported setup. To disable decorations, see {0}", '`#terminal.integrated.shellIntegrations.decorationsEnabled#`', '`#editor.accessibilitySupport#`'),
 +			markdownDescription: localize('terminal.integrated.shellIntegration.enabled', "Determines whether or not shell integration is auto-injected to support features like enhanced command tracking and current working directory detection. \n\nShell integration works by injecting the shell with a startup script. The script gives Codex insight into what is happening within the terminal.\n\nSupported shells:\n\n- Linux/macOS: bash, fish, pwsh, zsh\n - Windows: pwsh, git bash\n\nThis setting applies only when terminals are created, so you will need to restart your terminals for it to take effect.\n\n Note that the script injection may not work if you have custom arguments defined in the terminal profile, have enabled {1}, have a [complex bash `PROMPT_COMMAND`](https://code.visualstudio.com/docs/editor/integrated-terminal#_complex-bash-promptcommand), or other unsupported setup. To disable decorations, see {0}", '`#terminal.integrated.shellIntegrations.decorationsEnabled#`', '`#editor.accessibilitySupport#`'),
@@ -1118,12 +1117,10 @@ index 9628466..2ab04b1 100644
 -					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into VS Code.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
 +					description: localize('gettingStarted.setup.OpenFolderWeb.description.interpolated', "You're all set to start coding. You can open a local project or a remote repository to get your files into Codex.\n{0}\n{1}", Button(localize('openFolder', "Open Folder"), 'command:workbench.action.addRootFolder'), Button(localize('openRepository', "Open Repository"), 'command:remoteHub.openRepository')),
  					when: 'workspaceFolderCount == 0',
-@@ -397,4 +397,4 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
- 		id: 'SetupScreenReader',
--		title: localize('gettingStarted.setupScreenReader.title', "Get Started with VS Code using a Screen Reader"),
--		description: localize('gettingStarted.setupScreenReader.description', "Learn the tools and shortcuts that make VS Code accessible. Note that some actions are not actionable from within the context of the walkthrough."),
-+		title: localize('gettingStarted.setupScreenReader.title', "Get Started with Codex using a Screen Reader"),
-+		description: localize('gettingStarted.setupScreenReader.description', "Learn the tools and shortcuts that make Codex accessible. Note that some actions are not actionable from within the context of the walkthrough."),
+@@ -402,3 +402,3 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
+ 		title: localize('gettingStarted.setupAccessibility.title', "Get Started with Accessibility Features"),
+-		description: localize('gettingStarted.setupAccessibility.description', "Learn the tools and shortcuts that make VS Code accessible. Note that some actions are not actionable from within the context of the walkthrough."),
++		description: localize('gettingStarted.setupAccessibility.description', "Learn the tools and shortcuts that make Codex accessible. Note that some actions are not actionable from within the context of the walkthrough."),
  		isFeatured: true,
 @@ -511,6 +511,6 @@ export const walkthroughs: GettingStartedWalkthroughContent = [
  					title: localize('gettingStarted.extensions.title', "Code with extensions"),
@@ -1140,8 +1137,8 @@ index bdd30bf..5023e82 100644
 +++ b/src/vs/workbench/contrib/welcomeWalkthrough/browser/editor/vs_code_editor_walkthrough.ts
 @@ -13,3 +13,3 @@ export default function content(accessor: ServicesAccessor) {
  ## Interactive Editor Playground
--The core editor in VS Code is packed with features.  This page highlights a number of them and lets you interactively try them out through the use of a number of embedded editors.  For full details on the editor features for VS Code and more head over to our [documentation](command:workbench.action.openDocumentationUrl).
-+The core editor in Codex is packed with features.  This page highlights a number of them and lets you interactively try them out through the use of a number of embedded editors.  For full details on the editor features for Codex and more head over to our [documentation](command:workbench.action.openDocumentationUrl).
+-The core editor in VS Code is packed with features.  This page highlights a number of them and lets you interactively try them out through the use of a number of embedded editors.  For full details on the editor features for VS Code and more head over to our [documentation](https://code.visualstudio.com/docs).
++The core editor in Codex is packed with features.  This page highlights a number of them and lets you interactively try them out through the use of a number of embedded editors.  For full details on the editor features for Codex and more head over to our [documentation](https://code.visualstudio.com/docs).
  
 @@ -46,3 +46,3 @@ That is the tip of the iceberg for multi-cursor editing. Have a look at the sele
  

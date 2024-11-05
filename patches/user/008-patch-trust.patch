@@ -8,6 +8,6 @@ index 0ab6828..caac7c0 100644
  				type: 'boolean',
 -				default: true,
 +				default: false,
- 				description: localize('workspace.trust.description', "Controls whether or not Workspace Trust is enabled within VS Code."),
+ 				description: localize('workspace.trust.description', "Controls whether or not Workspace Trust is enabled within Codex."),
  				tags: [WORKSPACE_TRUST_SETTING_TAG],
  				scope: ConfigurationScope.APPLICATION,
