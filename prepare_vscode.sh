@@ -132,7 +132,7 @@ setpath "product" "tipsAndTricksUrl" "https://go.microsoft.com/fwlink/?linkid=85
 setpath "product" "twitterUrl" "https://go.microsoft.com/fwlink/?LinkID=533687"
 
 if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
-  setpath "product" "updateUrl" "https://raw.githubusercontent.com/Codex/versions/refs/heads/master"
+  setpath "product" "updateUrl" "https://raw.githubusercontent.com/BiblioNexus-Foundation/versions/refs/heads/master"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
     setpath "product" "downloadUrl" "https://github.com/BiblioNexus-Foundation/codex-insiders/releases"
