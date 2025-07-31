@@ -1,6 +1,6 @@
 === PATCH REBUILD ===
-**Build Version:** 1.99.24959
-**Base VS Code:** 1.99.2
-**Rebuild Reason:** Added Extensions Back (and updated windows to windows-2022)
-**Build Date:** Fri Jul 25 15:36:42 UTC 2025
-**Commit:** b5985cff763326c126bdb1b80acc552f7829b71d
+**Build Version:** 1.100.05106
+**Base VS Code:** 1.100.0
+**Rebuild Reason:** Test windows installer patch
+**Build Date:** Thu Jul 31 18:49:22 UTC 2025
+**Commit:** f7c7e4e53ee1943d53e0dd71021e29e232143ba5
