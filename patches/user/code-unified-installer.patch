@@ -1,8 +1,8 @@
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
-index 98175f5..316835a 100644
+index 98175f5..4893f4c 100644
 --- a/build/gulpfile.vscode.win32.js
 +++ b/build/gulpfile.vscode.win32.js
-@@ -61,19 +61,15 @@ function packageInnoSetup(iss, options, cb) {
+@@ -61,25 +61,21 @@ function packageInnoSetup(iss, options, cb) {
  
  /**
   * @param {string} arch
@@ -27,6 +27,13 @@ index 98175f5..316835a 100644
  		fs.mkdirSync(outputPath, { recursive: true });
  
  		const originalProductJsonPath = path.join(sourcePath, 'resources/app/product.json');
+ 		const productJsonPath = path.join(outputPath, 'product.json');
+ 		const productJson = JSON.parse(fs.readFileSync(originalProductJsonPath, 'utf8'));
+-		productJson['target'] = target;
++		productJson['target'] = 'unified';
+ 		fs.writeFileSync(productJsonPath, JSON.stringify(productJson, undefined, '\t'));
+ 
+ 		const quality = product.quality || 'dev';
 @@ -89,7 +85,7 @@ function buildWin32Setup(arch, target) {
  			DirName: product.win32DirName,
  			Version: pkg.version,
