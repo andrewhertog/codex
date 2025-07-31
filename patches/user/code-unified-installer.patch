@@ -1,8 +1,9 @@
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
-index 1234567..abcdefg 100644
+index 98175f5..316835a 100644
 --- a/build/gulpfile.vscode.win32.js
 +++ b/build/gulpfile.vscode.win32.js
-@@ -62,10 +62,6 @@ function packageInnoSetup(issPath, options, cb) {
+@@ -61,19 +61,15 @@ function packageInnoSetup(iss, options, cb) {
+ 
  /**
   * @param {string} arch
 - * @param {string} target
@@ -25,6 +26,7 @@ index 1234567..abcdefg 100644
 +		const outputPath = setupDir(arch, 'unified');
  		fs.mkdirSync(outputPath, { recursive: true });
  
+ 		const originalProductJsonPath = path.join(sourcePath, 'resources/app/product.json');
 @@ -89,7 +85,7 @@ function buildWin32Setup(arch, target) {
  			DirName: product.win32DirName,
  			Version: pkg.version,
@@ -42,7 +44,7 @@ index 1234567..abcdefg 100644
  			ProductJsonPath: productJsonPath,
  			Quality: quality
  		};
-@@ -124,17 +119,13 @@ function buildWin32Setup(arch, target) {
+@@ -123,17 +118,14 @@ function buildWin32Setup(arch, target) {
  
  /**
   * @param {string} arch
@@ -66,10 +68,10 @@ index 1234567..abcdefg 100644
  /**
   * @param {string} arch
 diff --git a/build/win32/code.iss b/build/win32/code.iss
-index 1234567..abcdefg 100644
+index cad6e39..59fb670 100644
 --- a/build/win32/code.iss
 +++ b/build/win32/code.iss
-@@ -1639,9 +1639,11 @@ procedure DisableAppDirInheritance();
+@@ -1617,9 +1617,11 @@ var
  begin
    Permissions := '/grant:r "*S-1-5-18:(OI)(CI)F" /grant:r "*S-1-5-32-544:(OI)(CI)F" /grant:r "*S-1-5-11:(OI)(CI)RX" /grant:r "*S-1-5-32-545:(OI)(CI)RX"';
  
@@ -81,5 +83,5 @@ index 1234567..abcdefg 100644
 -  #endif
 +  end;
  
-   Exec(ExpandConstant('{sys}\icacls.exe'), ExpandConstant('"{app}" /inheritance:r ' + Permissions), '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+   Exec(ExpandConstant('{sys}\icacls.exe'), ExpandConstant('"{app}" /inheritancelevel:r ') + Permissions, '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
  end;
