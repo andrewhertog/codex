@@ -1,5 +1,5 @@
 diff --git a/build/gulpfile.vscode.win32.js b/build/gulpfile.vscode.win32.js
-index 98175f5..b27bce1 100644
+index 98175f5..7de9314 100644
 --- a/build/gulpfile.vscode.win32.js
 +++ b/build/gulpfile.vscode.win32.js
 @@ -64,13 +64,13 @@ function packageInnoSetup(iss, options, cb) {
@@ -33,13 +33,17 @@ index 98175f5..b27bce1 100644
  
  /**
   * @param {string} arch
-@@ -157,3 +156,6 @@ function updateIcon(executablePath) {
+@@ -157,3 +156,10 @@ function updateIcon(executablePath) {
  
  gulp.task(task.define('vscode-win32-x64-inno-updater', task.series(copyInnoUpdater('x64'), updateIcon(path.join(buildPath('x64'), 'tools', 'inno_updater.exe')))));
  gulp.task(task.define('vscode-win32-arm64-inno-updater', task.series(copyInnoUpdater('arm64'), updateIcon(path.join(buildPath('arm64'), 'tools', 'inno_updater.exe')))));
 +
 +// The unified setup tasks are already defined above via defineWin32SetupTasks()
 +// They can be accessed directly as 'vscode-win32-x64-unified-setup' and 'vscode-win32-arm64-unified-setup'
++
++// Add backward compatibility aliases for the old task names
++gulp.task(task.define('vscode-win32-x64-setup', gulp.series('vscode-win32-x64-unified-setup')));
++gulp.task(task.define('vscode-win32-arm64-setup', gulp.series('vscode-win32-arm64-unified-setup')));
 diff --git a/build/win32/code.iss b/build/win32/code.iss
 index cad6e39..6eea467 100644
 --- a/build/win32/code.iss

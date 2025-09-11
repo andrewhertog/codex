@@ -126,7 +126,7 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   fi
 
   if [[ "${SHOULD_BUILD_EXE_SYS}" != "no" || "${SHOULD_BUILD_EXE_USR}" != "no" ]]; then
-    npm run gulp "vscode-win32-${VSCODE_ARCH}-setup"
+    npm run gulp "vscode-win32-${VSCODE_ARCH}-unified-setup"
   fi
 
   if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then
