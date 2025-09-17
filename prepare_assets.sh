@@ -144,12 +144,6 @@ elif [[ "${OS_NAME}" == "windows" ]]; then
   if [[ "${SHOULD_BUILD_EXE_SYS}" != "no" || "${SHOULD_BUILD_EXE_USR}" != "no" ]]; then
     echo "Moving Unified EXE"
     mv "vscode\\.build\\win32-${VSCODE_ARCH}\\unified-setup\\VSCodeSetup.exe" "assets\\${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"
-    
-    # Create both system and user versions for compatibility
-    if [[ "${SHOULD_BUILD_EXE_USR}" != "no" ]]; then
-      echo "Creating User EXE (copy of unified installer)"
-      cp "assets\\${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" "assets\\${APP_NAME}UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"
-    fi
   fi
 
   if [[ "${VSCODE_ARCH}" == "ia32" || "${VSCODE_ARCH}" == "x64" ]]; then

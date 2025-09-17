@@ -134,16 +134,10 @@ elif [[ "${ASSETS}" != "null" ]]; then
     # windows-arm64
     if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
       if [[ -z $( contains "${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
-        echo "Building on Windows arm64 because we have no system setup"
+        echo "Building on Windows arm64 because we have no unified setup"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_EXE_SYS="no"
-      fi
-
-      if [[ -z $( contains "UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
-        echo "Building on Windows arm64 because we have no user setup"
-        export SHOULD_BUILD="yes"
-      else
         export SHOULD_BUILD_EXE_USR="no"
       fi
 
@@ -171,16 +165,10 @@ elif [[ "${ASSETS}" != "null" ]]; then
     # windows-x64
     else
       if [[ -z $( contains "${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
-        echo "Building on Windows x64 because we have no system setup"
+        echo "Building on Windows x64 because we have no unified setup"
         export SHOULD_BUILD="yes"
       else
         export SHOULD_BUILD_EXE_SYS="no"
-      fi
-
-      if [[ -z $( contains "UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe" ) ]]; then
-        echo "Building on Windows x64 because we have no user setup"
-        export SHOULD_BUILD="yes"
-      else
         export SHOULD_BUILD_EXE_USR="no"
       fi
 
