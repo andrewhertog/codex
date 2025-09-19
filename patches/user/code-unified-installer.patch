@@ -77,7 +77,7 @@ index 7e71707..976f07f 100644
 --- a/build/azure-pipelines/win32/codesign.ts
 +++ b/build/azure-pipelines/win32/codesign.ts
 @@ -70,9 +70,9 @@ async function main() {
-
+ 
  	// Sign setup
  	if (process.env['BUILT_CLIENT']) {
 -		printBanner('Sign setup packages (system, user)');
@@ -88,7 +88,7 @@ index 7e71707..976f07f 100644
 +		await streamProcessOutputAndCheckResult('Sign unified setup package', task);
  	}
  }
-
+ 
 diff --git a/build/azure-pipelines/win32/product-build-win32.yml b/build/azure-pipelines/win32/product-build-win32.yml
 index e561d8e..a8694de 100644
 --- a/build/azure-pipelines/win32/product-build-win32.yml
@@ -96,27 +96,27 @@ index e561d8e..a8694de 100644
 @@ -260,18 +260,15 @@ steps:
            $ServerArchivePath = ".build\win32-$(VSCODE_ARCH)\vscode-server-win32-$(VSCODE_ARCH).zip"
            $WebArchivePath = ".build\win32-$(VSCODE_ARCH)\vscode-server-win32-$(VSCODE_ARCH)-web.zip"
-
+ 
 -          $SystemSetupPath = ".build\win32-$(VSCODE_ARCH)\system-setup\VSCodeSetup-$(VSCODE_ARCH)-$Version.exe"
 -          $UserSetupPath = ".build\win32-$(VSCODE_ARCH)\user-setup\VSCodeUserSetup-$(VSCODE_ARCH)-$Version.exe"
 +          $UnifiedSetupPath = ".build\win32-$(VSCODE_ARCH)\unified-setup\VSCodeSetup-$(VSCODE_ARCH)-$Version.exe"
-
+ 
 -          mv .build\win32-$(VSCODE_ARCH)\system-setup\VSCodeSetup.exe $SystemSetupPath
 -          mv .build\win32-$(VSCODE_ARCH)\user-setup\VSCodeSetup.exe $UserSetupPath
 +          mv .build\win32-$(VSCODE_ARCH)\unified-setup\VSCodeSetup.exe $UnifiedSetupPath
-
+ 
            echo "##vso[task.setvariable variable=CLIENT_PATH]$ClientArchivePath"
            echo "##vso[task.setvariable variable=SERVER_PATH]$ServerArchivePath"
            echo "##vso[task.setvariable variable=WEB_PATH]$WebArchivePath"
-
+ 
 -          echo "##vso[task.setvariable variable=SYSTEM_SETUP_PATH]$SystemSetupPath"
 -          echo "##vso[task.setvariable variable=USER_SETUP_PATH]$UserSetupPath"
 +          echo "##vso[task.setvariable variable=UNIFIED_SETUP_PATH]$UnifiedSetupPath"
          condition: succeededOrFailed()
          displayName: Move setup packages
-
+ 
 @@ -311,20 +308,10 @@ steps:
-
+ 
        - task: 1ES.PublishPipelineArtifact@1
          inputs:
 -          targetPath: $(SYSTEM_SETUP_PATH)
@@ -152,19 +152,19 @@ index 98175f5..7de9314 100644
 +	if (target !== 'system' && target !== 'user' && target !== 'unified') {
  		throw new Error('Invalid setup target');
  	}
-
+ 
  	return cb => {
 -		const x64AppId = target === 'system' ? product.win32x64AppId : product.win32x64UserAppId;
 -		const arm64AppId = target === 'system' ? product.win32arm64AppId : product.win32arm64UserAppId;
 +		const x64AppId = target === 'unified' ? product.win32x64AppId : (target === 'system' ? product.win32x64AppId : product.win32x64UserAppId);
 +		const arm64AppId = target === 'unified' ? product.win32arm64AppId : (target === 'system' ? product.win32arm64AppId : product.win32arm64UserAppId);
-
+ 
  		const sourcePath = buildPath(arch);
  		const outputPath = setupDir(arch, target);
 @@ -130,10 +130,9 @@ function defineWin32SetupTasks(arch, target) {
  	gulp.task(task.define(`vscode-win32-${arch}-${target}-setup`, task.series(cleanTask, buildWin32Setup(arch, target))));
  }
-
+ 
 -defineWin32SetupTasks('x64', 'system');
 -defineWin32SetupTasks('arm64', 'system');
 -defineWin32SetupTasks('x64', 'user');
@@ -172,11 +172,11 @@ index 98175f5..7de9314 100644
 +// Define unified setup tasks that create a single installer supporting both system and user installations
 +defineWin32SetupTasks('x64', 'unified');
 +defineWin32SetupTasks('arm64', 'unified');
-
+ 
  /**
   * @param {string} arch
 @@ -157,3 +156,10 @@ function updateIcon(executablePath) {
-
+ 
  gulp.task(task.define('vscode-win32-x64-inno-updater', task.series(copyInnoUpdater('x64'), updateIcon(path.join(buildPath('x64'), 'tools', 'inno_updater.exe')))));
  gulp.task(task.define('vscode-win32-arm64-inno-updater', task.series(copyInnoUpdater('arm64'), updateIcon(path.join(buildPath('arm64'), 'tools', 'inno_updater.exe')))));
 +
@@ -193,7 +193,7 @@ index cad6e39..89d9d3b 100644
 @@ -44,7 +44,11 @@ CloseApplications=force
  SignTool=esrp
  #endif
-
+ 
 -#if "user" == InstallTarget
 +#if "unified" == InstallTarget
 +DefaultDirName={code:GetDefaultDirName}
@@ -206,7 +206,7 @@ index cad6e39..89d9d3b 100644
 @@ -119,1166 +123,1166 @@ Filename: "powershell.exe"; Parameters: "Invoke-Command -ScriptBlock {{Remove-Ap
  #define SoftwareClassesRootKey "HKLM"
  #endif
-
+ 
 -Root: {#SoftwareClassesRootKey}; Subkey: "Software\Classes\.ascx\OpenWithProgids"; ValueType: none; ValueName: "{#RegValueName}"; Flags: deletevalue uninsdeletevalue; Tasks: associatewithfiles
 -Root: {#SoftwareClassesRootKey}; Subkey: "Software\Classes\.ascx\OpenWithProgids"; ValueType: string; ValueName: "{#RegValueName}.ascx"; ValueData: ""; Flags: uninsdeletevalue; Tasks: associatewithfiles
 -Root: {#SoftwareClassesRootKey}; Subkey: "Software\Classes\{#RegValueName}.ascx"; ValueType: string; ValueName: ""; ValueData: "{cm:SourceFile,ASCX}"; Flags: uninsdeletekey; Tasks: associatewithfiles
@@ -2527,16 +2527,16 @@ index cad6e39..89d9d3b 100644
 +Root: {#SoftwareClassesRootKey}; Subkey: "Software\Classes\Drive\shell\{#RegValueName}"; ValueType: expandsz; ValueName: ""; ValueData: "{cm:OpenWithCodeContextMenu,{#ShellNameShort}}"; Tasks: addcontextmenufolders; Flags: uninsdeletekey; Check: not (IsWindows11OrLater and QualityIsInsiders)
 +Root: {#SoftwareClassesRootKey}; Subkey: "Software\Classes\Drive\shell\{#RegValueName}"; ValueType: expandsz; ValueName: "Icon"; ValueData: "{app}\{#ExeBasename}.exe"; Tasks: addcontextmenufolders; Check: not (IsWindows11OrLater and QualityIsInsiders)
 +Root: {#SoftwareClassesRootKey}; Subkey: "Software\Classes\Drive\shell\{#RegValueName}\command"; ValueType: expandsz; ValueName: ""; ValueData: """{app}\{#ExeBasename}.exe"" ""%V"""; Tasks: addcontextmenufolders; Check: not (IsWindows11OrLater and QualityIsInsiders)
-
+ 
  ; Environment
  #if "user" == InstallTarget
 @@ -1293,9 +1297,132 @@ Root: {#SoftwareClassesRootKey}; Subkey: "Software\Classes\Drive\shell\{#RegValu
  #define Uninstall32RootKey "HKLM32"
  #endif
-
+ 
 -Root: {#EnvironmentRootKey}; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{code:AddToPath|{app}\bin}"; Tasks: addtopath; Check: NeedsAddToPath(ExpandConstant('{app}\bin'))
 +Root: {#EnvironmentRootKey}; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{code:AddToPath|{app}\bin}"; Tasks: addtopath; Check: NeedsAddToPath(ExpandConstant('{app}\bin'))
-
+ 
  [Code]
 +var
 +  InstallTypePage: TWizardPage;
@@ -2550,7 +2550,7 @@ index cad6e39..89d9d3b 100644
 +begin
 +  Page := CreateCustomPage(wpLicense, 'Choose Installation Type', 'Select how you would like to install VS Code');
 +  InstallTypePage := Page;
-+
++  
 +  Label1 := TLabel.Create(Page);
 +  Label1.Parent := Page.Surface;
 +  Label1.Caption := 'Please choose the installation type:';
@@ -2558,20 +2558,20 @@ index cad6e39..89d9d3b 100644
 +  Label1.Top := 0;
 +  Label1.Width := Page.SurfaceWidth;
 +  Label1.Height := ScaleY(15);
-+
++  
 +  SystemInstallRadio := TRadioButton.Create(Page);
 +  SystemInstallRadio.Parent := Page.Surface;
-+  SystemInstallRadio.Caption := 'Install for all users (system-wide installation)' + #13#10 +
++  SystemInstallRadio.Caption := 'Install for all users (system-wide installation)' + #13#10 + 
 +                                'Requires administrator privileges. Installs to Program Files.';
 +  SystemInstallRadio.Left := 0;
 +  SystemInstallRadio.Top := ScaleY(25);
 +  SystemInstallRadio.Width := Page.SurfaceWidth;
 +  SystemInstallRadio.Height := ScaleY(40);
 +  SystemInstallRadio.Checked := IsAdminInstallMode();
-+
++  
 +  UserInstallRadio := TRadioButton.Create(Page);
 +  UserInstallRadio.Parent := Page.Surface;
-+  UserInstallRadio.Caption := 'Install for current user only' + #13#10 +
++  UserInstallRadio.Caption := 'Install for current user only' + #13#10 + 
 +                              'No administrator privileges required. Installs to user profile.';
 +  UserInstallRadio.Left := 0;
 +  UserInstallRadio.Top := ScaleY(75);
@@ -2592,9 +2592,14 @@ index cad6e39..89d9d3b 100644
 +    if SystemInstallRadio.Checked then begin
 +      // Switch to admin mode for system installation
 +      if not IsAdminInstallMode() then begin
-+        MsgBox('A system-wide installation requires administrator privileges. Please restart the installer as administrator.', mbError, MB_OK);
-+        Result := False;
-+        Exit;
++        if MsgBox('A system-wide installation requires administrator privileges. The installer will restart with elevated privileges.', mbInformation, MB_OK) = IDOK then begin
++          Result := False;
++          ShellExecAsOriginalUser('runas', ExpandConstant('{srcexe}'), '', '', SW_SHOW, ewWaitUntilTerminated, 0);
++          Exit;
++        end else begin
++          Result := False;
++          Exit;
++        end;
 +      end;
 +    end;
 +  end;
@@ -2608,7 +2613,7 @@ index cad6e39..89d9d3b 100644
 +    Result := IsAdminInstallMode();
 +end;
 +
-+function GetDefaultDirName(Param: String): String;
++function GetDefaultDirName(): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := ExpandConstant('{pf}\{#DirName}')
@@ -2616,7 +2621,7 @@ index cad6e39..89d9d3b 100644
 +    Result := ExpandConstant('{userpf}\{#DirName}');
 +end;
 +
-+function GetSoftwareClassesRootKey(Param: String): String;
++function GetSoftwareClassesRootKey(): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'HKLM'
@@ -2624,7 +2629,7 @@ index cad6e39..89d9d3b 100644
 +    Result := 'HKCU';
 +end;
 +
-+function GetEnvironmentRootKey(Param: String): String;
++function GetEnvironmentRootKey(): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'HKLM'
@@ -2632,7 +2637,7 @@ index cad6e39..89d9d3b 100644
 +    Result := 'HKCU';
 +end;
 +
-+function GetEnvironmentKey(Param: String): String;
++function GetEnvironmentKey(): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'System\CurrentControlSet\Control\Session Manager\Environment'
@@ -2640,7 +2645,7 @@ index cad6e39..89d9d3b 100644
 +    Result := 'Environment';
 +end;
 +
-+function GetUninstall64RootKey(Param: String): String;
++function GetUninstall64RootKey(): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'HKLM64'
@@ -2648,7 +2653,7 @@ index cad6e39..89d9d3b 100644
 +    Result := 'HKCU64';
 +end;
 +
-+function GetUninstall32RootKey(Param: String): String;
++function GetUninstall32RootKey(): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'HKLM32'
@@ -2673,7 +2678,7 @@ index cad6e39..89d9d3b 100644
 +    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\Drive\shell\{#RegValueName}');
    end;
  end;
-
+ 
 @@ -1491,7 +1618,7 @@ var
  begin
    ShellExec('', 'powershell.exe', '-Command ' + AddQuotes('Remove-AppxPackage -Package ''{#AppxPackageFullname}'''), '', SW_HIDE, ewWaitUntilTerminated, RemoveAppxPackageResultCode);
@@ -2698,7 +2703,7 @@ index cad6e39..89d9d3b 100644
  begin
 -  RegQueryStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', OrigPath)
 +  RegQueryStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', OrigPath)
-
+ 
    if (Length(OrigPath) > 0) and (OrigPath[Length(OrigPath)] = ';') then
      Result := OrigPath + VSCode
 @@ -1585,7 +1712,7 @@ begin
@@ -2717,5 +2722,5 @@ index cad6e39..89d9d3b 100644
 -  RegWriteExpandStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', NewPath);
 +  RegWriteExpandStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', NewPath);
  end;
-
+ 
  #ifdef Debug
