@@ -2592,14 +2592,9 @@ index cad6e39..89d9d3b 100644
 +    if SystemInstallRadio.Checked then begin
 +      // Switch to admin mode for system installation
 +      if not IsAdminInstallMode() then begin
-+        if MsgBox('A system-wide installation requires administrator privileges. The installer will restart with elevated privileges.', mbInformation, MB_OK) = IDOK then begin
-+          Result := False;
-+          ShellExecAsOriginalUser('runas', ExpandConstant('{srcexe}'), '', '', SW_SHOW, ewWaitUntilTerminated, 0);
-+          Exit;
-+        end else begin
-+          Result := False;
-+          Exit;
-+        end;
++        MsgBox('A system-wide installation requires administrator privileges. Please restart the installer as administrator.', mbError, MB_OK);
++        Result := False;
++        Exit;
 +      end;
 +    end;
 +  end;
