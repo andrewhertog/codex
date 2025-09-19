@@ -2672,10 +2672,10 @@ index cad6e39..89d9d3b 100644
 -    RegDeleteKeyIncludingSubkeys({#EnvironmentRootKey}, 'Software\Classes\directory\shell\{#RegValueName}');
 -    RegDeleteKeyIncludingSubkeys({#EnvironmentRootKey}, 'Software\Classes\directory\background\shell\{#RegValueName}');
 -    RegDeleteKeyIncludingSubkeys({#EnvironmentRootKey}, 'Software\Classes\Drive\shell\{#RegValueName}');
-+    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\*\shell\{#RegValueName}');
-+    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\directory\shell\{#RegValueName}');
-+    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\directory\background\shell\{#RegValueName}');
-+    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\Drive\shell\{#RegValueName}');
++    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\*\shell\{#RegValueName}');
++    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\directory\shell\{#RegValueName}');
++    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\directory\background\shell\{#RegValueName}');
++    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\Drive\shell\{#RegValueName}');
    end;
  end;
  
@@ -2684,7 +2684,7 @@ index cad6e39..89d9d3b 100644
    ShellExec('', 'powershell.exe', '-Command ' + AddQuotes('Remove-AppxPackage -Package ''{#AppxPackageFullname}'''), '', SW_HIDE, ewWaitUntilTerminated, RemoveAppxPackageResultCode);
    if not WizardIsTaskSelected('addcontextmenufiles') then begin
 -    RegDeleteKeyIncludingSubkeys({#EnvironmentRootKey}, 'Software\Classes\{#RegValueName}ContextMenu');
-+    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\{#RegValueName}ContextMenu');
++    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\{#RegValueName}ContextMenu');
    end;
  end;
  #endif
@@ -2693,7 +2693,7 @@ index cad6e39..89d9d3b 100644
    OrigPath: string;
  begin
 -  if not RegQueryStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', OrigPath)
-+  if not RegQueryStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', OrigPath)
++  if not RegQueryStringValue(GetEnvironmentRootKey(), GetEnvironmentKey(), 'Path', OrigPath)
    then begin
      Result := True;
      exit;
@@ -2702,7 +2702,7 @@ index cad6e39..89d9d3b 100644
    OrigPath: string;
  begin
 -  RegQueryStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', OrigPath)
-+  RegQueryStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', OrigPath)
++  RegQueryStringValue(GetEnvironmentRootKey(), GetEnvironmentKey(), 'Path', OrigPath)
  
    if (Length(OrigPath) > 0) and (OrigPath[Length(OrigPath)] = ';') then
      Result := OrigPath + VSCode
@@ -2711,7 +2711,7 @@ index cad6e39..89d9d3b 100644
      exit;
    end;
 -  if not RegQueryStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', Path)
-+  if not RegQueryStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', Path)
++  if not RegQueryStringValue(GetEnvironmentRootKey(), GetEnvironmentKey(), 'Path', Path)
    then begin
      exit;
    end;
@@ -2720,7 +2720,7 @@ index cad6e39..89d9d3b 100644
      end;
    end;
 -  RegWriteExpandStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', NewPath);
-+  RegWriteExpandStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', NewPath);
++  RegWriteExpandStringValue(GetEnvironmentRootKey(), GetEnvironmentKey(), 'Path', NewPath);
  end;
  
  #ifdef Debug
