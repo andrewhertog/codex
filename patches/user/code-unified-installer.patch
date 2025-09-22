@@ -284,9 +284,15 @@ index cad6e39..43d7f42 100644
 +function GetDefaultDirName(Param: String): String;
 +begin
 +  if GetInstallTypeSelection() then
-+    Result := ExpandConstant('{pf}\{#DirName}')
++  begin
++    Result := ExpandConstant('{pf}\{#DirName}');
++    MsgBox('Installing to SYSTEM directory: ' + Result, mbInformation, MB_OK);
++  end
 +  else
++  begin
 +    Result := ExpandConstant('{localappdata}\Programs\{#DirName}');
++    MsgBox('Installing to USER directory: ' + Result, mbInformation, MB_OK);
++  end;
 +end;
 +
 +function GetSoftwareClassesRootKey(Param: String): String;
