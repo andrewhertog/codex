@@ -1,0 +1,127 @@
+diff --git a/build/win32/code.iss b/build/win32/code.iss
+index cad6e39..b550be4 100644
+--- a/build/win32/code.iss
++++ b/build/win32/code.iss
+@@ -44,7 +44,11 @@ CloseApplications=force
+ SignTool=esrp
+ #endif
+ 
+-#if "user" == InstallTarget
++#if "unified" == InstallTarget
++DefaultDirName={code:GetDefaultDirName}
++PrivilegesRequired=lowest
++PrivilegesRequiredOverridesAllowed=dialog
++#elif "user" == InstallTarget
+ DefaultDirName={userpf}\{#DirName}
+ PrivilegesRequired=lowest
+ #else
+@@ -1623,3 +1627,109 @@ begin
+ 
+   Exec(ExpandConstant('{sys}\icacls.exe'), ExpandConstant('"{app}" /inheritancelevel:r ') + Permissions, '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+ end;
++
++#if "unified" == InstallTarget
++var
++  SystemInstallRadio: TRadioButton;
++  UserInstallRadio: TRadioButton;
++  InstallTypePage: TWizardPage;
++
++procedure CreateInstallTypePage;
++var
++  SystemInstallLabel, UserInstallLabel: TLabel;
++begin
++  InstallTypePage := CreateCustomPage(wpWelcome, 'Installation Type', 'Choose how you want to install {#NameLong}.');
++  
++  SystemInstallRadio := TRadioButton.Create(InstallTypePage);
++  SystemInstallRadio.Parent := InstallTypePage.Surface;
++  SystemInstallRadio.Caption := 'Install for all users (requires administrator privileges)';
++  SystemInstallRadio.Left := 0;
++  SystemInstallRadio.Top := 20;
++  SystemInstallRadio.Width := InstallTypePage.SurfaceWidth;
++  SystemInstallRadio.Checked := IsAdminInstallMode();
++  
++  SystemInstallLabel := TLabel.Create(InstallTypePage);
++  SystemInstallLabel.Parent := InstallTypePage.Surface;
++  SystemInstallLabel.Caption := 'Installs {#NameLong} in the Program Files folder. All users on this computer will be able to use {#NameLong}.';
++  SystemInstallLabel.Left := 20;
++  SystemInstallLabel.Top := SystemInstallRadio.Top + SystemInstallRadio.Height + 5;
++  SystemInstallLabel.Width := InstallTypePage.SurfaceWidth - 20;
++  SystemInstallLabel.WordWrap := True;
++  SystemInstallLabel.AutoSize := True;
++  
++  UserInstallRadio := TRadioButton.Create(InstallTypePage);
++  UserInstallRadio.Parent := InstallTypePage.Surface;
++  UserInstallRadio.Caption := 'Install for current user only';
++  UserInstallRadio.Left := 0;
++  UserInstallRadio.Top := SystemInstallLabel.Top + SystemInstallLabel.Height + 15;
++  UserInstallRadio.Width := InstallTypePage.SurfaceWidth;
++  UserInstallRadio.Checked := not IsAdminInstallMode();
++  
++  UserInstallLabel := TLabel.Create(InstallTypePage);
++  UserInstallLabel.Parent := InstallTypePage.Surface;
++  UserInstallLabel.Caption := 'Installs {#NameLong} in your user folder. Only you will be able to use {#NameLong}.';
++  UserInstallLabel.Left := 20;
++  UserInstallLabel.Top := UserInstallRadio.Top + UserInstallRadio.Height + 5;
++  UserInstallLabel.Width := InstallTypePage.SurfaceWidth - 20;
++  UserInstallLabel.WordWrap := True;
++  UserInstallLabel.AutoSize := True;
++end;
++
++procedure InitializeWizard;
++begin
++  CreateInstallTypePage;
++end;
++
++function NextButtonClick(CurPageID: Integer): Boolean;
++begin
++  Result := True;
++  if CurPageID = InstallTypePage.ID then
++  begin
++    if SystemInstallRadio.Checked and not IsAdminLoggedOn then
++    begin
++      MsgBox('You have chosen to install {#NameLong} for all users, but you are not logged on as an administrator. Please restart the installer as an administrator or choose to install for the current user only.', mbError, MB_OK);
++      Result := False;
++    end;
++  end;
++end;
++
++function GetInstallTypeSelection(): Boolean;
++begin
++  if Assigned(SystemInstallRadio) then
++    Result := SystemInstallRadio.Checked
++  else
++    Result := IsAdminInstallMode();
++end;
++
++function GetDefaultDirName(Param: String): String;
++begin
++  if GetInstallTypeSelection() then
++    Result := ExpandConstant('{pf}\{#DirName}')
++  else
++    Result := ExpandConstant('{localappdata}\Programs\{#DirName}');
++end;
++
++function GetSoftwareClassesRootKey(Param: String): String;
++begin
++  if GetInstallTypeSelection() then
++    Result := 'HKLM'
++  else
++    Result := 'HKCU';
++end;
++
++function GetEnvironmentRootKey(Param: String): String;
++begin
++  if GetInstallTypeSelection() then
++    Result := 'HKLM'
++  else
++    Result := 'HKCU';
++end;
++
++function GetEnvironmentKey(Param: String): String;
++begin
++  if GetInstallTypeSelection() then
++    Result := 'System\CurrentControlSet\Control\Session Manager\Environment'
++  else
++    Result := 'Environment';
++end;
++#endif
