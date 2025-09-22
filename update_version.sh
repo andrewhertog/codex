@@ -152,14 +152,9 @@ if [[ "${OS_NAME}" == "osx" ]]; then
   VERSION_PATH="${VSCODE_QUALITY}/darwin/${VSCODE_ARCH}"
   updateLatestVersion
 elif [[ "${OS_NAME}" == "windows" ]]; then
-  # system installer
+  # unified installer (serves as both system and user installer)
   ASSET_NAME="${APP_NAME}Setup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"
   VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/system"
-  updateLatestVersion
-
-  # user installer
-  ASSET_NAME="${APP_NAME}UserSetup-${VSCODE_ARCH}-${RELEASE_VERSION}.exe"
-  VERSION_PATH="${VSCODE_QUALITY}/win32/${VSCODE_ARCH}/user"
   updateLatestVersion
 
   # windows archive
