@@ -2530,7 +2530,7 @@ index cad6e39..89d9d3b 100644
  
  ; Environment
  #if "user" == InstallTarget
-@@ -1293,9 +1297,132 @@ Root: {#SoftwareClassesRootKey}; Subkey: "Software\Classes\Drive\shell\{#RegValu
+@@ -1293,9 +1297,133 @@ Root: {#SoftwareClassesRootKey}; Subkey: "Software\Classes\Drive\shell\{#RegValu
  #define Uninstall32RootKey "HKLM32"
  #endif
  
@@ -2590,7 +2590,7 @@ index cad6e39..89d9d3b 100644
 +  Result := True;
 +  if CurPageID = InstallTypePage.ID then begin
 +    if SystemInstallRadio.Checked then begin
-+      // Switch to admin mode for system installation
++      // Check admin mode for system installation
 +      if not IsAdminInstallMode() then begin
 +        MsgBox('A system-wide installation requires administrator privileges. Please restart the installer as administrator.', mbError, MB_OK);
 +        Result := False;
@@ -2608,7 +2608,7 @@ index cad6e39..89d9d3b 100644
 +    Result := IsAdminInstallMode();
 +end;
 +
-+function GetDefaultDirName(): String;
++function GetDefaultDirName(Param: String): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := ExpandConstant('{pf}\{#DirName}')
@@ -2616,7 +2616,7 @@ index cad6e39..89d9d3b 100644
 +    Result := ExpandConstant('{userpf}\{#DirName}');
 +end;
 +
-+function GetSoftwareClassesRootKey(): String;
++function GetSoftwareClassesRootKey(Param: String): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'HKLM'
@@ -2624,7 +2624,7 @@ index cad6e39..89d9d3b 100644
 +    Result := 'HKCU';
 +end;
 +
-+function GetEnvironmentRootKey(): String;
++function GetEnvironmentRootKey(Param: String): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'HKLM'
@@ -2632,7 +2632,7 @@ index cad6e39..89d9d3b 100644
 +    Result := 'HKCU';
 +end;
 +
-+function GetEnvironmentKey(): String;
++function GetEnvironmentKey(Param: String): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'System\CurrentControlSet\Control\Session Manager\Environment'
@@ -2640,7 +2640,7 @@ index cad6e39..89d9d3b 100644
 +    Result := 'Environment';
 +end;
 +
-+function GetUninstall64RootKey(): String;
++function GetUninstall64RootKey(Param: String): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'HKLM64'
@@ -2648,7 +2648,7 @@ index cad6e39..89d9d3b 100644
 +    Result := 'HKCU64';
 +end;
 +
-+function GetUninstall32RootKey(): String;
++function GetUninstall32RootKey(Param: String): String;
 +begin
 +  if GetInstallTypeSelection() then
 +    Result := 'HKLM32'
@@ -2656,10 +2656,12 @@ index cad6e39..89d9d3b 100644
 +    Result := 'HKCU32';
 +end;
 +
- function IsBackgroundUpdate(): Boolean;
- begin
-   Result := ExpandConstant('{param:update|false}') <> 'false';
-@@ -1478,10 +1605,10 @@ var
++function IsBackgroundUpdate(): Boolean;
++begin
++  Result := ExpandConstant('{param:update|false}') <> 'false';
++end;
+ 
+@@ -1478,10 +1609,10 @@ var
  begin
    if WizardIsTaskSelected('addcontextmenufiles') then begin
      ShellExec('', 'powershell.exe', '-Command ' + AddQuotes('Add-AppxPackage -Path ''' + ExpandConstant('{app}\appx\{#AppxPackage}') + ''' -ExternalLocation ''' + ExpandConstant('{app}\appx') + ''''), '', SW_HIDE, ewWaitUntilTerminated, AddAppxPackageResultCode);
@@ -2667,55 +2669,55 @@ index cad6e39..89d9d3b 100644
 -    RegDeleteKeyIncludingSubkeys({#EnvironmentRootKey}, 'Software\Classes\directory\shell\{#RegValueName}');
 -    RegDeleteKeyIncludingSubkeys({#EnvironmentRootKey}, 'Software\Classes\directory\background\shell\{#RegValueName}');
 -    RegDeleteKeyIncludingSubkeys({#EnvironmentRootKey}, 'Software\Classes\Drive\shell\{#RegValueName}');
-+    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\*\shell\{#RegValueName}');
-+    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\directory\shell\{#RegValueName}');
-+    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\directory\background\shell\{#RegValueName}');
-+    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\Drive\shell\{#RegValueName}');
++    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\*\shell\{#RegValueName}');
++    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\directory\shell\{#RegValueName}');
++    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\directory\background\shell\{#RegValueName}');
++    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\Drive\shell\{#RegValueName}');
    end;
  end;
  
-@@ -1491,7 +1618,7 @@ var
+@@ -1491,7 +1620,7 @@ var
  begin
    ShellExec('', 'powershell.exe', '-Command ' + AddQuotes('Remove-AppxPackage -Package ''{#AppxPackageFullname}'''), '', SW_HIDE, ewWaitUntilTerminated, RemoveAppxPackageResultCode);
    if not WizardIsTaskSelected('addcontextmenufiles') then begin
 -    RegDeleteKeyIncludingSubkeys({#EnvironmentRootKey}, 'Software\Classes\{#RegValueName}ContextMenu');
-+    RegDeleteKeyIncludingSubkeys(GetEnvironmentRootKey(), 'Software\Classes\{#RegValueName}ContextMenu');
++    RegDeleteKeyIncludingSubkeys({code:GetEnvironmentRootKey}, 'Software\Classes\{#RegValueName}ContextMenu');
    end;
  end;
  #endif
-@@ -1554,7 +1681,7 @@ function NeedsAddToPath(VSCode: string): boolean;
+@@ -1554,7 +1683,7 @@ function NeedsAddToPath(VSCode: string): boolean;
  var
    OrigPath: string;
  begin
 -  if not RegQueryStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', OrigPath)
-+  if not RegQueryStringValue(GetEnvironmentRootKey(), GetEnvironmentKey(), 'Path', OrigPath)
++  if not RegQueryStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', OrigPath)
    then begin
      Result := True;
      exit;
-@@ -1566,7 +1693,7 @@ function AddToPath(VSCode: string): string;
+@@ -1566,7 +1695,7 @@ function AddToPath(VSCode: string): string;
  var
    OrigPath: string;
  begin
 -  RegQueryStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', OrigPath)
-+  RegQueryStringValue(GetEnvironmentRootKey(), GetEnvironmentKey(), 'Path', OrigPath)
++  RegQueryStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', OrigPath)
  
    if (Length(OrigPath) > 0) and (OrigPath[Length(OrigPath)] = ';') then
      Result := OrigPath + VSCode
-@@ -1585,7 +1712,7 @@ begin
+@@ -1585,7 +1714,7 @@ begin
    if not CurUninstallStep = usUninstall then begin
      exit;
    end;
 -  if not RegQueryStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', Path)
-+  if not RegQueryStringValue(GetEnvironmentRootKey(), GetEnvironmentKey(), 'Path', Path)
++  if not RegQueryStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', Path)
    then begin
      exit;
    end;
-@@ -1601,7 +1728,7 @@ begin
+@@ -1601,7 +1730,7 @@ begin
        end;
      end;
    end;
 -  RegWriteExpandStringValue({#EnvironmentRootKey}, '{#EnvironmentKey}', 'Path', NewPath);
-+  RegWriteExpandStringValue(GetEnvironmentRootKey(), GetEnvironmentKey(), 'Path', NewPath);
++  RegWriteExpandStringValue({code:GetEnvironmentRootKey}, '{code:GetEnvironmentKey}', 'Path', NewPath);
  end;
  
  #ifdef Debug
