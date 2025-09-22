@@ -207,6 +207,7 @@ index cad6e39..43d7f42 100644
  
    Exec(ExpandConstant('{sys}\icacls.exe'), ExpandConstant('"{app}" /inheritancelevel:r ') + Permissions, '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
  end;
++#endif
 +
 +#if "unified" == InstallTarget
 +var
