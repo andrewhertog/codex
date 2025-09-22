@@ -283,26 +283,18 @@ index cad6e39..43d7f42 100644
 +
 +function GetDefaultDirName(Param: String): String;
 +var
-+  UserProgramsDir: String;
++  UserDir: String;
 +begin
 +  if GetInstallTypeSelection() then
 +  begin
 +    Result := ExpandConstant('{pf}\{#DirName}');
-+    MsgBox('Installing to SYSTEM directory: ' + Result, mbInformation, MB_OK);
++    MsgBox('SYSTEM install: ' + Result, mbInformation, MB_OK);
 +  end
 +  else
 +  begin
-+    // Try multiple approaches to get the user programs directory
-+    UserProgramsDir := ExpandConstant('{localappdata}');
-+    if UserProgramsDir = '{localappdata}' then
-+    begin
-+      // Fallback: construct path manually using user profile
-+      UserProgramsDir := ExpandConstant('{userdocs}');
-+      UserProgramsDir := ExtractFilePath(ExtractFilePath(UserProgramsDir)) + 'AppData\Local';
-+    end;
-+    Result := UserProgramsDir + '\Programs\{#DirName}';
-+    Result := ExpandConstant(Result);
-+    MsgBox('Installing to USER directory: ' + Result, mbInformation, MB_OK);
++    UserDir := ExpandConstant('{userdocs}\..\AppData\Local\Programs\{#DirName}');
++    Result := UserDir;
++    MsgBox('USER install: ' + Result, mbInformation, MB_OK);
 +  end;
 +end;
 +
