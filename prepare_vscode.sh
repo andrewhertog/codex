@@ -44,7 +44,6 @@ setpath "product" "keyboardShortcutsUrlMac" "https://go.microsoft.com/fwlink/?li
 setpath "product" "keyboardShortcutsUrlWin" "https://go.microsoft.com/fwlink/?linkid=832145"
 setpath "product" "licenseUrl" "https://github.com/genesis-ai-dev/codex/blob/master/LICENSE"
 setpath_json "product" "linkProtectionTrustedDomains" '["https://open-vsx.org"]'
-setpath_json "product" "trustedExtensionPublishers" '["project-accelerate", "frontier-rnd"]'
 setpath "product" "releaseNotesUrl" "https://go.microsoft.com/fwlink/?LinkID=533483#vscode"
 setpath "product" "reportIssueUrl" "https://github.com/genesis-ai-dev/codex/issues/new"
 setpath "product" "requestFeatureUrl" "https://go.microsoft.com/fwlink/?LinkID=533482"
@@ -95,7 +94,6 @@ else
   setpath "product" "applicationName" "codex"
   setpath "product" "linuxIconName" "codex"
   setpath "product" "quality" "stable"
-  setpath "product" "dataFolderName" ".codex"
   setpath "product" "urlProtocol" "codex"
   setpath "product" "serverApplicationName" "codex-server"
   setpath "product" "serverDataFolderName" ".codex-server"
